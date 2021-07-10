@@ -53,7 +53,6 @@ function onImageClick(e) {
   // console.log({ h: e.target });
 
   openModalWindow(e.target);
-  svgCloseBtn();
 }
 refs.ulJsEl.addEventListener('click', onImageClick);
 
@@ -71,15 +70,6 @@ function openModalWindow(target) {
 
   modalImageEl.src = source;
   modalImageEl.alt = target.alt;
-}
-
-// функция добавиление svg на closeBtn
-function svgCloseBtn() {
-  modalIsOpen = true;
-
-  const createCloseSvg = document.createElement('svg');
-  refs.closeBtn.appendChild(createCloseSvg);
-  console.log(refs.closeBtn);
 }
 
 // функция закрытия модального окна - при клике по closeBtn(крестик в модалке) закрыть модальное окно
