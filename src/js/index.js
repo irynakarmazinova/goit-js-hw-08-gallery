@@ -10,8 +10,9 @@ const refs = {
   closeBtn: document.querySelector('[data-action="close-lightbox"]'),
 };
 
+// глобальные переменные
+const modalImageEl = refs.divJSLightboxEl.querySelector('.lightbox__image');
 let modalIsOpen = false;
-const modalImage = refs.divJSLightboxEl.querySelector('.lightbox__image');
 let imageCardNextSibling = null;
 
 // функция добавления/создания разметки
@@ -41,43 +42,52 @@ refs.ulJsEl.insertAdjacentHTML('beforeend', createGalleryItems(galleryItems));
 
 //  функция делегирования addEventListener на ul
 function onImageClick(e) {
-  // когда кликаешь на лишку, отменить по умолчанию перезагрузку страницы
-  // превент действует только на событии
+  // когда кликаешь на img, отменить по умолчанию перезагрузку страницы
+  // превент действует только на событии(event/e)
   e.preventDefault(); //
 
   if (!e.target.classList.contains('gallery__image')) {
     return;
   }
 
-  console.log({ h: e.target });
+  // console.log({ h: e.target });
 
   openModalWindow(e.target);
-  // closeModalWindow();
+  svgCloseBtn();
 }
 refs.ulJsEl.addEventListener('click', onImageClick);
 
 // функция открытия модального окна - при клике на img добавлять класс is-open и открывать модальное окно
 function openModalWindow(target) {
-  //   // при открытии модального окна внести данные в src and alt
   modalIsOpen = true;
 
+  // при открытии модального окна внести данные в src and alt
   const { source } = target.dataset;
   const gallery = target.closest('.gallery');
+
   imageCardNextSibling = gallery.nextElementSibling;
   imageCardNextSibling.classList.add('is-open');
-  console.log(imageCardNextSibling);
+  // console.log(imageCardNextSibling);
 
-  modalImage.src = source;
-
-  modalImage.alt = target.alt;
+  modalImageEl.src = source;
+  modalImageEl.alt = target.alt;
 }
 
-// функция закрытия модального окна - при клике по closeBtn(крестик в модалке) закрытие модального окна
+// функция добавиление svg на closeBtn
+function svgCloseBtn() {
+  modalIsOpen = true;
+
+  const createCloseSvg = document.createElement('svg');
+  refs.closeBtn.appendChild(createCloseSvg);
+  console.log(refs.closeBtn);
+}
+
+// функция закрытия модального окна - при клике по closeBtn(крестик в модалке) закрыть модальное окно
 function closeModalWindow() {
   if (modalIsOpen) {
     imageCardNextSibling.classList.remove('is-open');
-    modalImage.src = '';
-    modalImage.alt = '';
+    modalImageEl.src = '';
+    modalImageEl.alt = '';
 
     modalIsOpen = false;
   }
@@ -93,17 +103,19 @@ function clickToOverlay(e) {
 document.addEventListener('click', clickToOverlay);
 
 // функция закрытия модального окна - при клике по клавише ESC
-function keydownToDocument(e) {
-  // по клавиши esc
+function keydownToEsc(e) {
   if (e.keyCode === 27) {
     closeModalWindow();
   }
+}
+window.addEventListener('keydown', keydownToEsc);
 
-  // функция пролистывания галереи клавишами лево/право
+// функция пролистывания галереи - при клике по клавише ArrowRight и ArrowLeft
+function keydownToArrowRightAndLeft(e) {
   const clickToLeftArrow = e.keyCode === 37;
   const clickToRightArrow = e.keyCode === 39;
   if (modalIsOpen && (clickToLeftArrow || clickToRightArrow)) {
-    const { src } = modalImage;
+    const { src } = modalImageEl;
     const foundIndex = galleryItems.findIndex(item => item.original === src);
     let item = null;
 
@@ -118,12 +130,12 @@ function keydownToDocument(e) {
     }
 
     if (item) {
-      modalImage.src = item.original;
-      modalImage.alt = item.description;
+      modalImageEl.src = item.original;
+      modalImageEl.alt = item.description;
     }
   }
 }
-window.addEventListener('keydown', keydownToDocument);
+window.addEventListener('keydown', keydownToArrowRightAndLeft);
 
 // функция lazyload с поддержкой нативной и библиотеки
 function addSrcAttrToLazyImages() {
