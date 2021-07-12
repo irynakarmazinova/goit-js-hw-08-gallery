@@ -104,6 +104,7 @@ window.addEventListener('keydown', keydownToEsc);
 function keydownToArrowRightAndLeft(e) {
   const clickToLeftArrow = e.keyCode === 37;
   const clickToRightArrow = e.keyCode === 39;
+
   if (modalIsOpen && (clickToLeftArrow || clickToRightArrow)) {
     const { src } = modalImageEl;
     const foundIndex = galleryItems.findIndex(item => item.original === src);
@@ -163,3 +164,105 @@ if ('loading' in HTMLImageElement.prototype) {
   console.log('Браузер НЕ поддерживает lazyload');
   addLazySizesScript();
 }
+// ------------------------------------------------------------------------
+// второй вариант решения - от Димы ментора
+// const refs = {
+//   gallery: document.querySelector('.gallery'),
+//   modal: document.querySelector('.js-lightbox'),
+//   modalImg: document.querySelector('.lightbox__image'),
+//   closeBtn: document.querySelector('[data-action=close-lightbox]'),
+// };
+
+// let activeIndex = 0;
+
+// const makeGalleryMarkup = ({
+//   preview,
+//   original,
+//   description,
+// }) => `<li class="gallery__item">
+//   <a
+//     class="gallery__link"
+//     href='${original}'
+//   >
+//     <img
+//       class="gallery__image"
+//       src='${preview}'
+//       data-source='${original}'
+//       alt='${description}'
+//     />
+//   </a>
+// </li>`;
+
+// const markup = galleryItems.map(makeGalleryMarkup);
+
+// refs.gallery.insertAdjacentHTML('beforeend', markup.join(''));
+
+// function onOpenModal(e) {
+//   e.preventDefault();
+
+//   if (e.target.nodeName !== 'IMG') {
+//     return;
+//   }
+
+//   markup.forEach((el, index) => {
+//     if (el.includes(e.target.src)) {
+//       activeIndex = index;
+//     }
+//   });
+//   console.log(activeIndex);
+
+//   window.addEventListener('keydown', keyboardManipulation);
+
+//   refs.modal.classList.add('is-open');
+//   refs.modalImg.src = e.target.dataset.source;
+//   refs.modalImg.alt = e.target.alt;
+// }
+// refs.gallery.addEventListener('click', onOpenModal);
+
+// function closeModal() {
+//   refs.modal.classList.remove('is-open');
+
+//   window.removeEventListener('keydown', keyboardManipulation);
+
+//   refs.modalImg.src = '#';
+//   refs.modalImg.alt = '';
+// }
+
+// function onModalClose(e) {
+//   if (e.target.nodeName === 'IMG') {
+//     return;
+//   }
+//   closeModal();
+// }
+// refs.modal.addEventListener('click', onModalClose);
+
+// function keyboardManipulation({ key }) {
+//   switch (key) {
+//     case galleryItems.length - 1 > activeIndex && 'ArrowRight':
+//       activeIndex += 1;
+//       refs.modalImg.src = galleryItems[activeIndex].original;
+//       break;
+
+//     case activeIndex > 0 && 'ArrowLeft':
+//       activeIndex -= 1;
+//       refs.modalImg.src = galleryItems[activeIndex].original;
+//       break;
+
+//     case activeIndex === galleryItems.length - 1 && 'ArrowRight':
+//       activeIndex = 0;
+//       refs.modalImg.src = galleryItems[activeIndex].original;
+//       break;
+
+//     case activeIndex === 0 && 'ArrowLeft':
+//       activeIndex = galleryItems.length - 1;
+//       refs.modalImg.src = galleryItems[activeIndex].original;
+//       break;
+
+//     case 'Escape':
+//       closeModal();
+//       break;
+
+//     default:
+//       alert('что-то пошло не так');
+//   }
+// }
