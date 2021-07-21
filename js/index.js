@@ -29,8 +29,8 @@ function createGalleryItems(items) {
     data-src="${preview}"
     data-source="${original}"
     alt="${description}"
-    width="390px"
-    higth="240px"
+    width="390"
+    higth="240"
     />
     </a>
     </li>
